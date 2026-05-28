@@ -1,0 +1,133 @@
+<!-- admin-panel.component.html -->
+<div class="page">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">🍽️ Admin — Refeitório</div>
+    <div class="nav-user">
+      <span class="nav-name">{{ auth.currentUser?.name }}</span>
+      <button class="btn-logout" (click)="auth.logout()">Sair</button>
+    </div>
+  </nav>
+
+  <!-- Notificação -->
+  <div class="notif" [class.success]="notifType==='success'" [class.error]="notifType==='error'" *ngIf="notification">
+    {{ notification }}
+  </div>
+
+  <main class="content">
+
+    <!-- Abas de Serviço -->
+    <div class="service-tabs" *ngIf="!loadingServices">
+      <button
+        *ngFor="let svc of services"
+        class="tab-btn"
+        [class.active]="svc.id === selectedServiceId"
+        (click)="selectService(svc.id)">
+        {{ svc.icon }} {{ svc.name }}
+        <span class="tab-badge" *ngIf="svc.waiting > 0">{{ svc.waiting }}</span>
+      </button>
+    </div>
+    <div class="skeleton-tabs" *ngIf="loadingServices">
+      <div class="skeleton-tab" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+
+    <!-- Sub-tabs: Fila / Estatísticas -->
+    <div class="sub-tabs">
+      <button class="sub-tab" [class.active]="view==='queue'" (click)="setView('queue')">📋 Fila</button>
+      <button class="sub-tab" [class.active]="view==='stats'" (click)="setView('stats')">📊 Estatísticas</button>
+    </div>
+
+    <!-- VIEW: FILA ─────────────────────────────────────────── -->
+    <div *ngIf="view === 'queue'">
+
+      <!-- Acção principal -->
+      <div class="action-bar">
+        <div class="action-info">
+          <strong>{{ selectedService?.name }}</strong>
+          <span>{{ waitingTickets.length }} em espera · {{ calledTickets.length }} chamado(s)</span>
+        </div>
+        <button class="btn-call" (click)="callNext()" [disabled]="waitingTickets.length === 0">
+          📢 Chamar Próximo
+        </button>
+      </div>
+
+      <!-- Chamados agora -->
+      <div class="queue-section" *ngIf="calledTickets.length > 0">
+        <h3 class="section-label called">🔔 Em Chamado</h3>
+        <div class="ticket-row called" *ngFor="let t of calledTickets">
+          <div class="t-number">{{ t.ticket_number }}</div>
+          <div class="t-info">
+            <span class="t-name">{{ t.cliente_nome }}</span>
+            <span class="t-time">Chamado às {{ t.called_at | date:'HH:mm:ss' }}</span>
+          </div>
+          <button
+            class="btn-complete"
+            (click)="completeTicket(t.id)"
+            [disabled]="processingId === t.id">
+            {{ processingId === t.id ? '...' : '✅ Concluir' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Em espera -->
+      <div class="queue-section">
+        <h3 class="section-label waiting">⏳ Em Espera</h3>
+
+        <div *ngIf="loadingQueue">
+          <div class="skeleton-row" *ngFor="let i of [1,2,3]"></div>
+        </div>
+
+        <div *ngIf="!loadingQueue">
+          <div class="ticket-row" *ngFor="let t of waitingTickets; let i = index">
+            <div class="t-pos">{{ i + 1 }}</div>
+            <div class="t-number">{{ t.ticket_number }}</div>
+            <div class="t-info">
+              <span class="t-name">{{ t.cliente_nome }}</span>
+              <span class="t-time">Chegou às {{ t.created_at | date:'HH:mm:ss' }}</span>
+            </div>
+          </div>
+
+          <div class="empty-queue" *ngIf="waitingTickets.length === 0">
+            <span>🎉</span> Fila vazia para este serviço.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIEW: ESTATÍSTICAS ──────────────────────────────────── -->
+    <div *ngIf="view === 'stats' && stats" class="stats-grid">
+      <div class="stat-card total">
+        <div class="stat-icon">🎫</div>
+        <div class="stat-value">{{ stats.total }}</div>
+        <div class="stat-label">Total hoje</div>
+      </div>
+      <div class="stat-card completed">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">{{ stats.completed }}</div>
+        <div class="stat-label">Atendidos</div>
+      </div>
+      <div class="stat-card waiting">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">{{ stats.waiting }}</div>
+        <div class="stat-label">Em espera</div>
+      </div>
+      <div class="stat-card cancelled">
+        <div class="stat-icon">❌</div>
+        <div class="stat-value">{{ stats.cancelled }}</div>
+        <div class="stat-label">Cancelados</div>
+      </div>
+      <div class="stat-card avg">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-value">{{ stats.avg_wait_minutes }} min</div>
+        <div class="stat-label">Tempo médio</div>
+      </div>
+    </div>
+
+    <div *ngIf="view === 'stats' && !stats" class="empty-stats">
+      <span>📊</span> Sem dados para hoje.
+    </div>
+
+  </main>
+</div>

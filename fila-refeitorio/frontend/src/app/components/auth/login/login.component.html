@@ -1,0 +1,59 @@
+<!-- login.component.html -->
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <div class="logo">🍽️</div>
+      <h1>Bem-vindo</h1>
+      <p>Sistema de Fila do Refeitório</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          [class.error]="hasError('email','required') || hasError('email','email')"
+          autocomplete="email"
+        />
+        <span class="hint error" *ngIf="hasError('email','required')">E-mail é obrigatório.</span>
+        <span class="hint error" *ngIf="hasError('email','email')">E-mail inválido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <div class="input-wrap">
+          <input
+            id="password"
+            [type]="showPass ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••"
+            [class.error]="hasError('password','required') || hasError('password','minlength')"
+            autocomplete="current-password"
+          />
+          <button type="button" class="eye-btn" (click)="showPass = !showPass">
+            {{ showPass ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <span class="hint error" *ngIf="hasError('password','required')">Senha é obrigatória.</span>
+        <span class="hint error" *ngIf="hasError('password','minlength')">Mínimo 6 caracteres.</span>
+      </div>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        <span *ngIf="!loading">Entrar</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+    </form>
+
+    <p class="auth-footer">
+      Não tem conta? <a routerLink="/register">Registar</a>
+    </p>
+  </div>
+</div>

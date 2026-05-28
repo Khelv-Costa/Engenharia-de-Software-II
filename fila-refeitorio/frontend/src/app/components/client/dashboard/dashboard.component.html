@@ -1,0 +1,106 @@
+<!-- dashboard.component.html -->
+<div class="page">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">🍽️ Refeitório</div>
+    <div class="nav-user">
+      <span class="nav-name">{{ auth.currentUser?.name }}</span>
+      <button class="btn-logout" (click)="auth.logout()">Sair</button>
+    </div>
+  </nav>
+
+  <!-- Notificação -->
+  <div class="notif" [class.success]="notifType==='success'" [class.error]="notifType==='error'" *ngIf="notification">
+    {{ notification }}
+  </div>
+
+  <main class="content">
+
+    <!-- Ticket ativo -->
+    <section class="ticket-section" *ngIf="!loadingTicket">
+
+      <div class="active-ticket" *ngIf="activeTicket; else noTicket"
+           [class.called]="activeTicket.status === 'called'">
+
+        <div class="ticket-header">
+          <span class="ticket-icon">{{ activeTicket.service_icon }}</span>
+          <div>
+            <p class="ticket-service">{{ activeTicket.service_name }}</p>
+            <p class="ticket-label">A sua senha</p>
+          </div>
+          <div class="ticket-badge" [class.called]="activeTicket.status === 'called'">
+            {{ statusLabel(activeTicket.status) }}
+          </div>
+        </div>
+
+        <div class="ticket-number">{{ activeTicket.ticket_number }}</div>
+
+        <div class="ticket-info" *ngIf="activeTicket.status === 'waiting'">
+          <div class="info-item">
+            <span class="info-label">Posição</span>
+            <span class="info-value">{{ activeTicket.position }}º</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Espera estimada</span>
+            <span class="info-value">~{{ activeTicket.estimated_wait }} min</span>
+          </div>
+        </div>
+
+        <div class="called-banner" *ngIf="activeTicket.status === 'called'">
+          🔔 A sua vez chegou! Dirija-se ao balcão.
+        </div>
+
+        <button
+          class="btn-cancel"
+          (click)="cancelTicket()"
+          [disabled]="cancellingTicket"
+          *ngIf="activeTicket.status === 'waiting' || activeTicket.status === 'called'">
+          {{ cancellingTicket ? 'A cancelar...' : 'Cancelar Senha' }}
+        </button>
+
+      </div>
+
+      <ng-template #noTicket>
+        <div class="empty-ticket">
+          <div class="empty-icon">🎫</div>
+          <p>Não tem senha ativa.</p>
+          <p class="empty-sub">Selecione um serviço abaixo para obter uma senha.</p>
+        </div>
+      </ng-template>
+
+    </section>
+
+    <!-- Skeleton loading ticket -->
+    <div class="skeleton-card" *ngIf="loadingTicket"></div>
+
+    <!-- Serviços disponíveis -->
+    <section class="services-section">
+      <h2>Serviços Disponíveis</h2>
+
+      <div class="services-grid" *ngIf="!loadingServices">
+        <div
+          class="service-card"
+          *ngFor="let svc of services"
+          (click)="createTicket(svc.id)"
+          [class.disabled]="!!activeTicket || creatingTicket">
+
+          <div class="svc-icon">{{ svc.icon }}</div>
+          <div class="svc-name">{{ svc.name }}</div>
+          <div class="svc-desc">{{ svc.description }}</div>
+          <div class="svc-badge">{{ svc.waiting_count }} em espera</div>
+        </div>
+      </div>
+
+      <!-- Skeleton services -->
+      <div class="services-grid" *ngIf="loadingServices">
+        <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+      </div>
+
+      <p class="services-note" *ngIf="activeTicket">
+        Cancele a sua senha atual para selecionar outro serviço.
+      </p>
+    </section>
+
+  </main>
+</div>

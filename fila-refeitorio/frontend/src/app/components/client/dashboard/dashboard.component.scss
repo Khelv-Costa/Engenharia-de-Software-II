@@ -1,0 +1,237 @@
+// dashboard.component.scss
+
+// ── Navbar ────────────────────────────────────────────────────
+.navbar {
+  background: #0f3460;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,.3);
+
+  .nav-brand { font-size: 1.2rem; font-weight: 700; }
+  .nav-user  { display: flex; align-items: center; gap: 1rem; }
+  .nav-name  { font-size: .9rem; opacity: .85; }
+}
+
+.btn-logout {
+  padding: .4rem .9rem;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .85rem;
+  transition: background .2s;
+
+  &:hover { background: rgba(255,255,255,.25); }
+}
+
+// ── Notif toast ───────────────────────────────────────────────
+.notif {
+  padding: .9rem 1.5rem;
+  font-weight: 600;
+  font-size: .9rem;
+  text-align: center;
+  animation: slideDown .3s ease;
+
+  &.success { background: #d1fae5; color: #065f46; }
+  &.error   { background: #fee2e2; color: #991b1b; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+// ── Layout ────────────────────────────────────────────────────
+.page    { min-height: 100vh; background: #f3f4f6; }
+.content { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
+
+// ── Ticket ativo ──────────────────────────────────────────────
+.ticket-section { margin-bottom: 2rem; }
+
+.active-ticket {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  border: 2px solid #e5e7eb;
+  transition: border-color .3s;
+
+  &.called { border-color: #f59e0b; background: #fffbeb; }
+}
+
+.ticket-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .ticket-icon    { font-size: 2rem; }
+  .ticket-service { font-weight: 700; color: #111827; margin: 0; }
+  .ticket-label   { color: #6b7280; font-size: .85rem; margin: 0; }
+}
+
+.ticket-badge {
+  margin-left: auto;
+  padding: .35rem .9rem;
+  border-radius: 20px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: .82rem;
+  font-weight: 700;
+
+  &.called { background: #fef3c7; color: #d97706; }
+}
+
+.ticket-number {
+  font-size: 4rem;
+  font-weight: 900;
+  text-align: center;
+  color: #0f3460;
+  letter-spacing: .1em;
+  margin: .5rem 0 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ticket-info {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  flex: 1;
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: .75rem;
+  text-align: center;
+
+  .info-label { display: block; font-size: .78rem; color: #6b7280; margin-bottom: .25rem; }
+  .info-value { font-size: 1.3rem; font-weight: 800; color: #0f3460; }
+}
+
+.called-banner {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.4); }
+  50%       { box-shadow: 0 0 0 10px rgba(251,191,36,0); }
+}
+
+.btn-cancel {
+  width: 100%;
+  padding: .75rem;
+  background: #fff;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+
+  &:hover:not(:disabled) { background: #ef4444; color: #fff; }
+  &:disabled { opacity: .5; cursor: not-allowed; }
+}
+
+// ── Empty ticket ──────────────────────────────────────────────
+.empty-ticket {
+  text-align: center;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  border: 2px dashed #e5e7eb;
+  color: #6b7280;
+
+  .empty-icon { font-size: 3rem; margin-bottom: .75rem; }
+  p { margin: .25rem 0; font-size: 1rem; }
+  .empty-sub { font-size: .88rem; }
+}
+
+// ── Serviços ──────────────────────────────────────────────────
+.services-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.service-card {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+
+  &:hover:not(.disabled) {
+    border-color: #0f3460;
+    box-shadow: 0 6px 20px rgba(15,52,96,.15);
+    transform: translateY(-2px);
+  }
+
+  &.disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+  .svc-icon  { font-size: 2.2rem; margin-bottom: .5rem; }
+  .svc-name  { font-weight: 700; color: #111827; font-size: 1rem; margin-bottom: .25rem; }
+  .svc-desc  { color: #6b7280; font-size: .8rem; margin-bottom: .75rem; }
+  .svc-badge {
+    display: inline-block;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-radius: 20px;
+    padding: .2rem .75rem;
+    font-size: .78rem;
+    font-weight: 600;
+  }
+}
+
+.services-note {
+  margin-top: 1rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: .85rem;
+}
+
+// ── Skeleton ──────────────────────────────────────────────────
+.skeleton-card {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 14px;
+  min-height: 180px;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+// ── Responsive ────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .ticket-number { font-size: 3rem; }
+  .ticket-info   { flex-direction: column; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+}
